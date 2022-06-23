@@ -35,7 +35,7 @@ with open("data.csv", "r", encoding= "utf_8") as f:
                     c = float(c)
                     d = float(d)
                 except:
-                    print(-1,-1,-1,file=g)
+                    print("-1,-1,-1",file=g)
                     continue
                 data1 = (x1,y1,z1,a)
                 data2 = (x2,y2,z2,b)
@@ -50,7 +50,7 @@ with open("data.csv", "r", encoding= "utf_8") as f:
                     q[idx] = [t4] 
                 B_inv = np.linalg.pinv(B)
                 ans = B_inv@q
-                ans = [ans[0][0], ans[1][0], ans[2][0]]
-                print(*ans,file=g)
+                strans = str(ans[0][0]) + "," + str(ans[1][0]) + "," + str(ans[2][0])
+                print(strans,file=g)
             else:
-                print(-1,-1,-1,file=g)
+                print("-1,-1,-1",file=g)

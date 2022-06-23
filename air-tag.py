@@ -42,7 +42,7 @@ from itertools import combinations
 def selectAns(sorce):
     l = len(sorce)
     if l < 3:
-        return (-1,-1,-1)
+        return "-1,-1,-1"
     dist = defaultdict(int)
     for i in range(l):
         for j in range(i+1,l):
@@ -67,7 +67,7 @@ def selectAns(sorce):
             retx = tmpX/l
             rety = tmpY/l
             retz = tmpZ/l
-    return (retx,rety,retz)
+    return str(retx) + "," + str(rety) + "," + str(retz)
 
 x1,y1,z1 = 0.85,3.93,0.45
 x2,y2,z2 = 1.45,0.34,1.65
@@ -87,7 +87,7 @@ with open("data.csv", "r", encoding= "utf_8") as f:
                     c = float(c)
                     d = float(d)
                 except:
-                    print(-1,-1,-1,file=g)
+                    print("-1,-1,-1",file=g)
                     continue
                 data1 = (x1,y1,z1,a)
                 data2 = (x2,y2,z2,b)
@@ -102,6 +102,6 @@ with open("data.csv", "r", encoding= "utf_8") as f:
                     if i != 0:
                         sorce.append(i)
                 ans = selectAns(sorce)
-                print(*ans,file=g)
+                print(ans,file=g)
             else:
-                print(-1,-1,-1,file=g)
+                print("-1,-1,-1",file=g)
