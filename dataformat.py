@@ -12,26 +12,31 @@ def moreThan10forD(d):
 
 def trycatch(a):
     try:
-        a = float(a)
-        return a
+        float(a)
+        return True
     except:
         if a != "" and a != "\n":
             s.add(a)
-            return 0
-        return -1
+            global idx
+            print(idx,a)
+            return False
+        else:
+            return True
+
+inputFileName = "data.csv"
+outputFileName = inputFileName
+
 s = set()
-with open("data.csv", "r", encoding= "utf_8") as f:
+with open(inputFileName, "r", encoding= "utf_8") as f:
     all = f.readlines()
-# with open("data.csv", "w", encoding= "utf_8") as g:
+with open(outputFileName, "w", encoding= "utf_8") as g:
     for idx,p in enumerate(all):
-        # p = p.replace("2./","2.7")
-        # g.write(p)
+        p = p.replace("2./","2.7") #2./ -> 2.7
         a,b,c,d = p.split(",")
-        # a,b,c = map(moreThan10,(a,b,c))
-        # d = moreThan10forD(d)
-        # ret = str(a)+","+str(b)+","+str(c)+","+str(d)
-        # g.write(ret)
-        a,b,c,d = map(trycatch,(a,b,c,d))
-        if not (a and b and c and d):
-            print(idx+1,a,b,c,d)
+        A,B,C,D = map(trycatch,(a,b,c,d))
+        if A and B and C and D:
+            a,b,c = map(moreThan10,(a,b,c))
+            d = moreThan10forD(d)
+            p = str(a)+","+str(b)+","+str(c)+","+str(d)
+        g.write(p)
 print(s)
