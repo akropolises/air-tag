@@ -1,14 +1,56 @@
+from math import degrees,radians,acos
+def rrdot(vec1,vec2):
+    x1,y1,z1 = vec1
+    x2,y2,z2 = vec2
+    r1 = (x1**2 + y1**2 + z1**2)**(1/2)
+    r2 = (x2**2 + y2**2 + z2**2)**(1/2)
+    dot = x1*x2 + y1*y2 + z1*z2
+    return r1,r2,dot
+
 inputFileName = "cat1_1_xyz(3000).csv"
 outputFileName = "formated_cat1_1_xyz(3000).csv"
-n = 3 # 平均を取る前後のデータの数。そのデータ自身を含むので奇数推奨
+# outputFileName = "formated_" + inputFileName
+n = 3 # 平均を取る前後のデータの数。
 # ↑例えば n = 3 の場合、(1つ前のデータ、そのデータ自身、1つ後のデータ)の平均を取る
+
+theta_th = 30 # 角度の閾値
+ratio_th = 2 # 比率の閾値
+length_th = 0.3 # 長さの閾値
+thModeisratio = True # 外れ値認定の閾値を比率で取るならTrue, 長さで取るならFalse
+
+cat = True # cat:True, human:False
+# cat = "cat" in inputFileName
 
 with open(inputFileName, "r", encoding= "utf_8") as f:
     points = []
     for p in f.readlines():
         a,b,c = map(float,p.split(","))
-        points.append((a,b,c))
+        d = 2.4 if cat else 1.5
+        if 0 < a < 4.2 and 0 < b < 4.2 and 0 < c < d:
+            points.append((a,b,c))
+        else:
+            points.append((-1,-1,-1))
 l = len(points)
+for i in range(1,l-1):
+    x0,y0,z0 = points[i-1]
+    x1,y1,z1 = points[i]
+    x2,y2,z2 = points[i+1]
+    if -1 in (x0,x1,x2):
+        continue
+    vec1 = (x1-x0,y1-y0,z1-z0)
+    vec2 = (x2-x1,y2-y1,z2-z1)
+    r1,r2,dot = rrdot(vec1,vec2)
+    if 0 in (r1,r2):
+        continue
+    theta = acos(dot/(r1*r2))
+    theta = abs(degrees(theta)-180)
+    if theta < theta_th:
+        print(r1,r2,i)
+        if thModeisratio and max(r1,r2)/min(r1,r2) < ratio_th:
+            points[i] = (-1,-1,-1)
+        elif not thModeisratio and min(r1,r2) > length_th:
+            points[i] = (-1,-1,-1)
+
 with open(outputFileName, "w", encoding="utf_8") as g:
     for i in range(l):
         cnt = 0
