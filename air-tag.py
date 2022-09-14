@@ -26,8 +26,9 @@ def cul2pointfrom3circle(data1,data2,data3):
     a = 1 + (Xz/Yz)**2 + (Xy/Zy)**2
     b = -x1 + (Xz/Yz)*(y1-Wz/Yz) + (Xy/Zy)*(z1-Wy/Zy)
     c = x1**2 + (Wz/Yz - y1)**2 + (Wy/Zy - z1)**2 - d1**2
-    Xans1 = (-b + (b**2-a*c)**(1/2))/a
-    Xans2 = (-b - (b**2-a*c)**(1/2))/a
+    D = (b**2-a*c)**(1/2)
+    Xans1 = -c/(b+D)
+    Xans2 = -(b+D)/a
     if type(Xans1) == type(1j):
         if not containsComplexNumber:
             return 0

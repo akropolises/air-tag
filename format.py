@@ -8,18 +8,19 @@ def rrdot(vec1,vec2):
     return r1,r2,dot
 
 inputFileName = "cat1_1_xyz(3000).csv"
-outputFileName = "formated_cat1_1_xyz(3000).csv"
-# outputFileName = "formated_" + inputFileName
+outputFileName = "formated_" + inputFileName
+cat = "cat" in inputFileName # cat:True, human:False
+# ↑outputFileNameは自動でinputFileNameの頭に"formated_"を付けたものになります(嫌だったら従来通り変えてください)
+# ↑inputFileNameに"cat"が含まれていれば　z < 2.4、そうでなければ人間のデータと見なし　z < 1.5のみを採用します
+
 n = 3 # 平均を取る前後のデータの数。
 # ↑例えば n = 3 の場合、(1つ前のデータ、そのデータ自身、1つ後のデータ)の平均を取る
 
 theta_th = 30 # 角度の閾値
 ratio_th = 2 # 比率の閾値
 length_th = 0.3 # 長さの閾値
-thModeisratio = True # 外れ値認定の閾値を比率で取るならTrue, 長さで取るならFalse
+thModeisratio = True # 外れ値認定の閾値を比率)(ratio_th)で取るならTrue, 長さ(length_th)で取るならFalse
 
-cat = True # cat:True, human:False
-# cat = "cat" in inputFileName
 
 with open(inputFileName, "r", encoding= "utf_8") as f:
     points = []
@@ -45,7 +46,6 @@ for i in range(1,l-1):
     theta = acos(dot/(r1*r2))
     theta = abs(degrees(theta)-180)
     if theta < theta_th:
-        print(r1,r2,i)
         if thModeisratio and max(r1,r2)/min(r1,r2) < ratio_th:
             points[i] = (-1,-1,-1)
         elif not thModeisratio and min(r1,r2) > length_th:
@@ -71,7 +71,7 @@ with open(outputFileName, "w", encoding="utf_8") as g:
                     y += b
                     z += c
                     cnt += 1
-        if x == y == z == 0:
+        if cnt == 0:
             print("-1,-1,-1",file=g)
         else:
             print("%f,%f,%f"%(x/cnt,y/cnt,z/cnt), file=g)
